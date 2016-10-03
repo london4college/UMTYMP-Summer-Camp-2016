@@ -1,0 +1,70 @@
+'''
+Picture Hanging:
+
+This program asks for a number of pegs, and then gives back the solution to that problem.
+It does this by using a recursive algorithm that builds the solution for n-1 pegs,
+and creates the inverse with the createCollapser() function,
+then places the new peg in between the solution for n-1 pegs and its inverse and at the end.
+The getNiceInstructions() function turns the answer the computer gives (which is in a list) into a more readable form,
+as well as letting the person interact by asking how many pegs they want the solution for.
+'''
+
+def createCollapser(l): #short for list
+    def oppOf(s):
+        if s=="L":
+            return "R"
+        else:
+            return "L"
+    ans = []
+    '''
+    1R 2R 1L 2L
+    
+    L2 L1 R2 R1
+    
+    [2, R, 1, R]
+    
+    
+    2R 1R 2L 1L
+    '''
+    
+    for val in reversed(l):
+        if type(val) == str:
+            ans.append(oppOf(val))
+        else:
+            ans.insert(-1, val)
+    return ans
+        
+    
+
+def findInstructions(num):
+    if num<1:
+        print("If there are no pegs, it always falls!")
+        return
+    if num==1:
+        return [1, "R"]
+    else:
+        stable = findInstructions(num-1)
+        rstable = createCollapser(stable)
+        stable.extend([num, 'R'])
+        stable.extend(rstable)
+        stable.extend([num, 'L'])
+        return stable
+        
+def getNiceInstructions():
+    num = None
+    while type(num)!=int:
+        try:
+            num = int(raw_input("How many pegs are there? ").replace(" ", ""))
+        except ValueError:
+            print("Sorry, I didn't understand that.")
+    print('')
+    inst = findInstructions(num)
+    ans = ""
+    for val in inst:
+        ans+=str(val)
+        if type(val)==str:
+            ans+=" "
+            
+    print(ans)
+                
+getNiceInstructions()
