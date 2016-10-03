@@ -1,0 +1,50 @@
+Travelling Salesman:
+This code computes the solution to the travelling salesman problem given in class.
+
+It will go through each possible route and compute the cost for it, and keep track of the smallest cost.
+This also means that if you look through the list of computed paths, you will also see the answer it gives out, just backwards.
+
+All the information about the graph is contained in the variable “costs” inside the computePath() function.
+That variable contains the node letter names of the edge sorted alphabetically and then concatenated as the key,
+and the price of taking that edge as the value of the key.
+
+(The solution it gives is ADBCEA with $676)
+'''
+
+import itertools
+
+def computePath(start, end):
+    sortedPlaces = sorted([start, end])
+    index = sortedPlaces[0]+sortedPlaces[1]
+    costs = {'ab':185, 'ac':119, 'ad':152, 'ae':133, 'bc':121, 'bd':150, 'be':200, 'cd':174, 'ce':120, 'de':199}
+    return costs[index]
+    
+def computeAll(startSpot = "a"):
+    smallestVal = -1
+    smallestPath = []
+    howMany = 0
+    for path in itertools.permutations(["a", "b", "c", "d", "e"]):
+        path = list(path)
+        if path[0]!=startSpot:
+            continue
+        
+        howMany+=1
+        
+        path.append(startSpot) #make sure we get back home
+        #print(path)
+        value = 0
+        for i in range(len(path)-1):
+            value+=computePath(path[i], path[i+1])
+        
+        if smallestVal==-1 or value<smallestVal:
+            smallestVal = value
+            smallestPath = path
+            
+        print(path, value)
+    
+    print("\nI tried {} paths".format(howMany))
+    print("\nSolution:")    
+    print(smallestPath, smallestVal)
+
+
+computeAll()
