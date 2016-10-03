@@ -1,0 +1,116 @@
+'''
+See and say code:
+
+This code allows you to take see and say codes and convert them into pictures just by typing them in.
+It also allows you to type in pictures and the computer will convert them into see and say code.
+
+Inside the function printAns() there is a variable called colAmt that determines how many columns are in the picture
+when drawing it. If there’s a picture that’s not 6 columns wide, this value should be changed.
+'''
+
+class Colors:
+    Blue = '\033[94m'
+    Green = '\033[92m'
+    Red = '\033[91m'
+    White = '\033[0m'
+
+def getAns(code):
+    ans = ""
+    i = -1
+    num=0
+    for char in code:
+        i*=-1
+        if i==1:
+            num = int(char)
+        else:
+            for _ in range(num):
+                ans+=char
+    
+    #print(ans)
+    return ans
+        
+def printAns(ans):
+    colAmt = 6 #how many columns are in the picture
+    line = ""
+    color = None
+    i=0
+    for char in ans:
+        if int(char)==1:
+            color = Colors.Green
+        else:
+            color = Colors.Red
+        line+=(color+char+Colors.White+' ')
+        if i==colAmt-1:
+            print(line)
+            line = ""
+            i = 0
+        else:
+            i+=1
+    if line:
+        print(line)
+
+def getCodeUI(num = None):
+    while type(num)!=int and type(num)!=long:
+        try:
+            #print(type(num))
+            num = int(raw_input("What is the code?\n").replace(" ", ""))
+        except ValueError:
+            print("Sorry, I didn't understand that.")
+    
+    print("Here's the picture:\n")
+    printAns(getAns(str(num)))
+ 
+def getPictureUI():
+    print("Type in your picture and then press enter twice when you're done")
+    sentinel = ""
+    inputText = '\n'.join(iter(raw_input, sentinel))
+    
+    print(pictureToCode(inputText))
+ 
+def pictureToCode(picture): #picture is a string
+    char = picture[0]
+    howMany = 0
+    ans = ""
+    picture = picture.replace("\n", "").replace(' ', '')
+    #print(picture)
+    for c in picture:
+        if c==char:
+            howMany+=1
+        else:
+            ans+=(str(howMany)+char)
+            char = c
+            howMany = 1
+    
+    ans+=(str(howMany)+char)
+    return ans
+
+def totalUI():
+    while True:
+        mode = None
+        while not (mode=="encode" or mode=="draw"):
+            try:
+                mode = str(raw_input("Would you like to 'encode' a picture, or 'draw' a picture from a code? ").replace(" ", "").lower())
+                if not (mode=="encode" or mode=="draw"):
+                    raise ValueError
+            except ValueError:
+                print("Sorry, I didn't understand that. Please type either 'encode' or 'draw'")
+                
+        if mode=="encode":
+            getPictureUI()
+        else:
+            getCodeUI()
+        
+        print("\nThere you go!")
+        again = None
+        while not (again=='y' or again=="n"):
+            try:
+                again = str(raw_input("Would you like to do something else? (y/n) ").replace(" ", "").lower())
+                if not (again=='y' or again=="n"):
+                    raise ValueError
+            except ValueError:
+                print("Sorry, I didn't understand that. Please type either 'y' or 'n'")
+                
+        if again=='n':
+            return
+    
+totalUI()
